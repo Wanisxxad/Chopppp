@@ -11,8 +11,11 @@
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #ffffff; color: #1a1a1a; margin: 0; scroll-behavior: smooth; }
         .announcement { background: #000; color: #fff; text-align: center; padding: 10px; font-size: 13px; font-weight: 600; }
-        header { background: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; z-index: 100; }
-        .header-logo { height: 40px; border-radius: 5px; cursor: pointer; }
+        
+        /* الهيدر مع تكبير اللوجو */
+        header { background: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; z-index: 100; }
+        .header-logo { height: 70px; width: auto; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .header-logo:hover { transform: scale(1.05); }
 
         /* القوائم الجانبية */
         .side-panel { position: fixed; top: 0; width: 300px; height: 100%; background: #ffffff; z-index: 200; transition: 0.4s ease; box-shadow: 0 0 20px rgba(0,0,0,0.1); padding: 25px; overflow-y: auto; }
@@ -31,9 +34,13 @@
         .input-box input, .input-box select { flex: 1; border: none; padding: 10px; outline: none; text-align: right; font-size: 14px; }
         .input-box i { background: #fcfcfc; padding: 12px; color: #888; border-left: 1px solid #eee; }
 
-        .cart-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; position: relative; }
+        .cart-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; }
         .cart-item img { width: 50px; height: 50px; border-radius: 5px; object-fit: cover; }
         .remove-item { color: #ff3b30; font-size: 12px; cursor: pointer; margin-right: auto; }
+
+        /* تنسيق كروت المنتجات */
+        .product-card { background: #fff; border: 1px solid #f0f0f0; border-radius: 15px; overflow: hidden; cursor: pointer; transition: 0.3s; }
+        .product-card:hover { border-color: #000; }
     </style>
 </head>
 <body>
@@ -57,11 +64,11 @@
         <i class="fa-solid fa-xmark text-2xl cursor-pointer" onclick="closePanels()"></i>
     </div>
     <ul class="space-y-6 font-bold text-gray-700">
-        <li class="flex items-center gap-3 cursor-pointer hover:text-black" onclick="filterProducts('all')"><i class="fa-solid fa-border-all"></i> الكل (All)</li>
-        <li class="flex items-center gap-3 cursor-pointer hover:text-black" onclick="filterProducts('ensemble')"><i class="fa-solid fa-shirt"></i> أطقم كاملة (Ensembles)</li>
-        <li class="flex items-center gap-3 cursor-pointer hover:text-black" onclick="filterProducts('veste')"><i class="fa-solid fa-vest"></i> فيستات (Vestes)</li>
-        <li class="flex items-center gap-3 cursor-pointer hover:text-black" onclick="filterProducts('hoodie')"><i class="fa-solid fa-user-ninja"></i> هوديز (Hoodies)</li>
-        <li class="flex items-center gap-3 cursor-pointer hover:text-black" onclick="filterProducts('pants')"><i class="fa-solid fa-pants"></i> سراويل (Pantalons)</li>
+        <li class="flex items-center gap-3 cursor-pointer hover:text-black" onclick="filterProducts('all', true)"><i class="fa-solid fa-border-all"></i> الكل</li>
+        <li class="flex items-center gap-3 cursor-pointer hover:text-black" onclick="filterProducts('ensemble', true)"><i class="fa-solid fa-shirt"></i> أطقم</li>
+        <li class="flex items-center gap-3 cursor-pointer hover:text-black" onclick="filterProducts('veste', true)"><i class="fa-solid fa-vest"></i> فيستات</li>
+        <li class="flex items-center gap-3 cursor-pointer hover:text-black" onclick="filterProducts('hoodie', true)"><i class="fa-solid fa-user-ninja"></i> هوديز</li>
+        <li class="flex items-center gap-3 cursor-pointer hover:text-black" onclick="filterProducts('pants', true)"><i class="fa-solid fa-pants"></i> سراويل</li>
     </ul>
 </div>
 
@@ -89,7 +96,7 @@
         </div>
 
         <div class="mb-4">
-            <p class="text-xs font-bold text-gray-500 mb-2">اللون (Couleur)</p>
+            <p class="text-xs font-bold text-gray-500 mb-2">اللون</p>
             <div class="flex gap-2">
                 <button class="opt-btn color-opt active" onclick="selectOpt(this, 'color')">Gris</button>
                 <button class="opt-btn color-opt" onclick="selectOpt(this, 'color')">Noir</button>
@@ -97,7 +104,7 @@
         </div>
 
         <div class="mb-6">
-            <p class="text-xs font-bold text-gray-500 mb-2">المقاس (Taille)</p>
+            <p class="text-xs font-bold text-gray-500 mb-2">المقاس</p>
             <div class="flex gap-2">
                 <button class="opt-btn size-opt active" onclick="selectOpt(this, 'size')">M</button>
                 <button class="opt-btn size-opt" onclick="selectOpt(this, 'size')">L</button>
@@ -108,7 +115,7 @@
         <button onclick="addToCart()" class="w-full border-2 border-black text-black py-3 rounded-xl font-bold mb-8 hover:bg-black hover:text-white transition">إضافة إلى السلة 🛒</button>
 
         <div class="form-card" id="orderForm">
-            <h3 class="text-center font-bold mb-4">معلومات التوصيل</h3>
+            <h3 class="text-center font-bold mb-4">أكمل معلوماتك للطلب</h3>
             <div class="input-box"><input type="text" id="custName" placeholder="الإسم الكامل"><i class="fa-solid fa-user"></i></div>
             <div class="input-box"><input type="tel" id="custPhone" placeholder="رقم الهاتف"><i class="fa-solid fa-phone"></i></div>
             <div class="input-box">
@@ -120,11 +127,11 @@
                 </select>
             </div>
             <div class="input-box"><input type="text" id="custCommune" placeholder="البلدية"><i class="fa-solid fa-map-marker-alt"></i></div>
-            <button onclick="submitOrder()" class="w-full bg-black text-white py-4 rounded-xl font-bold text-lg">تأكيد الشراء الآن</button>
+            <button onclick="submitOrder()" class="w-full bg-black text-white py-4 rounded-xl font-bold text-lg">تأكيد الشراء</button>
         </div>
     </div>
 
-    <h2 class="text-lg font-bold mb-4 mt-10 border-r-4 border-black pr-2">اكتشف المزيد</h2>
+    <h2 class="text-lg font-bold mb-4 mt-10 border-r-4 border-black pr-2" id="scrollPoint">منتجات قد تعجبك</h2>
     <div class="grid grid-cols-2 gap-4" id="otherProducts"></div>
 </main>
 
@@ -132,7 +139,6 @@
 const token = "8356805368:AAEy8AILHp8lODLxPeS-Gp6dxUQduoWrtVc";
 const chat_id = "8293116710";
 
-// داتا المنتجات مع التصنيفات
 const products = [
     { title: "Ensemble Polo Summer", price: 5900, img: "https://i.postimg.cc/KYryjMWw/IMG_20260210_225601_843.jpg", category: "ensemble" },
     { title: "Baggy Pants Premium", price: 2900, img: "https://i.postimg.cc/Gpp4xb1h/IMG_20260210_223009_331.jpg", category: "pants" },
@@ -160,22 +166,25 @@ function selectOpt(btn, type) {
     currentSelection[type] = btn.innerText;
 }
 
-// فلترة المنتجات حسب القائمة
-function filterProducts(cat) {
+// تعديل وظيفة الفلترة لمنع النزول عند الفتح لأول مرة
+function filterProducts(cat, shouldScroll = false) {
     const container = document.getElementById('otherProducts');
     container.innerHTML = "";
     const filtered = cat === 'all' ? products : products.filter(p => p.category === cat);
     
-    filtered.forEach((p, i) => {
+    filtered.forEach((p) => {
         container.innerHTML += `
-            <div class="product-card border border-gray-100 rounded-2xl overflow-hidden p-2 shadow-sm" onclick="loadProductByName('${p.title}')">
+            <div class="product-card p-2 shadow-sm" onclick="loadProductByName('${p.title}')">
                 <img src="${p.img}" class="w-full h-40 object-cover rounded-xl mb-2">
                 <p class="text-[10px] font-bold truncate">${p.title}</p>
                 <p class="text-xs font-black text-black">${p.price} DA</p>
             </div>`;
     });
-    closePanels();
-    window.scrollTo({top: document.getElementById('otherProducts').offsetTop - 100, behavior: 'smooth'});
+    
+    if(shouldScroll) {
+        closePanels();
+        window.scrollTo({top: document.getElementById('scrollPoint').offsetTop - 100, behavior: 'smooth'});
+    }
 }
 
 function loadProductByName(title) {
@@ -220,7 +229,7 @@ function updateCartUI() {
         container.innerHTML = cart.map(item => `
             <div class="cart-item">
                 <img src="${item.img}">
-                <div>
+                <div class="flex-1">
                     <p class="text-[11px] font-bold">${item.title}</p>
                     <p class="text-[10px] text-gray-500">${item.color} | ${item.size}</p>
                     <p class="text-xs font-black">${item.price}</p>
@@ -239,12 +248,12 @@ async function submitOrder() {
     const w = document.getElementById('custWilaya').value;
     const c = document.getElementById('custCommune').value;
 
-    if(!n || !p || !c) return alert("يرجى ملء كافة الخانات المطلوبة");
+    if(!n || !p || !c) return alert("يرجى ملء كافة الخانات");
 
     let orderItems = cart.map(i => `- ${i.title} (${i.color}/${i.size})`).join('\n');
     if(cart.length === 0) orderItems = `- ${document.getElementById('mainTitle').innerText} (${currentSelection.color}/${currentSelection.size})`;
 
-    const msg = `🚀 *طلب جديد من الموقع*\n\n📦 *المنتجات:*\n${orderItems}\n\n👤 *الزبون:* ${n}\n📞 *الهاتف:* ${p}\n📍 *العنوان:* ${w} | ${c}`;
+    const msg = `🚀 *طلب جديد*\n\n📦 *المنتجات:*\n${orderItems}\n\n👤 *الزبون:* ${n}\n📞 *الهاتف:* ${p}\n📍 *العنوان:* ${w} | ${c}`;
 
     try {
         await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -252,12 +261,13 @@ async function submitOrder() {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({chat_id, text: msg, parse_mode: 'Markdown'})
         });
-        alert("شكراً لك! تم إرسال طلبك بنجاح وسنتصل بك قريباً.");
+        alert("تم إرسال طلبك بنجاح!");
         cart = []; updateCartUI();
-    } catch(e) { alert("خطأ في الإرسال، يرجى المحاولة لاحقاً"); }
+    } catch(e) { alert("حدث خطأ في الإرسال"); }
 }
 
-window.onload = () => filterProducts('all');
+// تحميل المنتجات عند الفتح بدون نزول لأسفل
+window.onload = () => filterProducts('all', false);
 </script>
 </body>
 </html>
