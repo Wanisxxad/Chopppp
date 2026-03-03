@@ -19,22 +19,21 @@
         .panel-active { right: 0 !important; left: 0 !important; }
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; backdrop-filter: blur(3px); }
 
-        /* ستايل زر التاكيد والفورم */
-        .btn-black { background: #000; color: #fff; width: 100%; padding: 16px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-black { background: #000; color: #fff; width: 100%; padding: 16px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 18px; }
         .btn-black:active { transform: scale(0.97); }
         
-        .order-card { border: 1px solid #eee; border-radius: 12px; padding: 20px; background: #fff; }
-        .input-label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 14px; text-align: right; }
+        .order-card { border: 1px solid #eee; border-radius: 12px; padding: 20px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .input-label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 14px; text-align: right; color: #333; }
         .input-label span { color: red; }
         
-        .input-wrapper { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; overflow: hidden; }
+        .input-wrapper { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; overflow: hidden; background: #fff; }
         .input-wrapper input, .input-wrapper select { flex: 1; padding: 12px; border: none; outline: none; font-size: 14px; background: transparent; text-align: right; }
-        .input-wrapper .icon-box { background: #f9f9f9; padding: 14px; border-right: 1px solid #ddd; color: #888; width: 45px; text-align: center; }
+        .input-wrapper .icon-box { background: #f1f1f1; padding: 14px; border-right: 1px solid #ddd; color: #666; width: 48px; text-align: center; }
 
-        .delivery-option { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-        .delivery-option input { width: 18px; height: 18px; accent-color: #000; }
+        .delivery-option { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+        .delivery-option input { width: 18px; height: 18px; accent-color: #000; cursor: pointer; }
 
-        .category-item { padding: 15px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-weight: 700; color: #333; transition: 0.2s; }
+        .category-item { padding: 15px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-weight: 700; color: #333; }
     </style>
 </head>
 <body>
@@ -42,7 +41,7 @@
 <header class="flex justify-between items-center px-5 py-4">
     <div class="flex items-center gap-5">
         <i class="fa-solid fa-bars-staggered text-xl cursor-pointer" onclick="togglePanel('sideMenu')"></i>
-        <i class="fa-solid fa-magnifying-glass text-xl cursor-pointer"></i>
+        <i class="fa-solid fa-search text-xl cursor-pointer"></i>
     </div>
     <div class="text-2xl font-black italic cursor-pointer tracking-tighter" onclick="showPage('homePage')">CHINEE<span class="text-gray-400">DZ</span></div>
     <div class="relative cursor-pointer" onclick="togglePanel('sideCart')">
@@ -61,11 +60,9 @@
     <div class="flex flex-col">
         <div class="category-item" onclick="filter('ALL')">جميع المنتجات (ALL)</div>
         <div class="category-item" onclick="filter('ENSEMBLES')">أطقم (ENSEMBLES)</div>
-        <div class="category-item" onclick="filter('BAGGY')">سراويل واسعة (BAGGY PANTS)</div>
-        <div class="category-item" onclick="filter('VESTE')">سترات (VESTE & ZIPPER)</div>
+        <div class="category-item" onclick="filter('BAGGY')">سراويل واسعة (BAGGY)</div>
+        <div class="category-item" onclick="filter('VESTE')">سترات (VESTE)</div>
         <div class="category-item" onclick="filter('TSHIRT')">تيشرتات (T-SHIRTS)</div>
-        <div class="category-item" onclick="filter('POLO')">بولو (POLO SHIRTS)</div>
-        <div class="category-item" onclick="filter('ACCESS')">إكسسوارات (ACCESSORIES)</div>
     </div>
 </div>
 
@@ -83,7 +80,7 @@
     <div id="homePage" class="page active-page">
         <div class="flex justify-between items-end mb-6">
             <h2 id="currentCatTitle" class="text-xl font-black italic uppercase">Popular Items</h2>
-            <span class="text-[10px] font-bold text-gray-400">58 Wilayas Delivery</span>
+            <span class="text-[10px] font-bold text-gray-400 uppercase">58 Wilayas Shipping</span>
         </div>
         <div class="grid grid-cols-2 gap-4" id="mainGrid"></div>
     </div>
@@ -94,11 +91,11 @@
         </button>
         <img id="dImg" src="" class="w-full rounded-2xl mb-6 shadow-sm">
         <h1 id="dTitle" class="text-2xl font-black mb-1 uppercase italic"></h1>
-        <div class="text-xl font-bold mb-8" id="dPrice"></div>
+        <div class="text-xl font-bold mb-8 text-red-600" id="dPrice"></div>
         
         <button onclick="addToCart()" class="btn-black mb-12">أضف إلى حقيبة التسوق</button>
 
-        <div class="order-card shadow-sm">
+        <div class="order-card">
             <label class="input-label">الاسم كامل <span>*</span></label>
             <div class="input-wrapper">
                 <input type="text" id="custName" placeholder="First name">
@@ -113,7 +110,7 @@
 
             <label class="input-label">Wilaya الولاية <span>*</span></label>
             <div class="input-wrapper">
-                <select id="custWilaya" onchange="updateCommunes()">
+                <select id="custWilaya">
                     <option value="">Wilaya الولاية</option>
                 </select>
                 <div class="icon-box"><i class="fa-solid fa-location-dot"></i></div>
@@ -121,9 +118,7 @@
 
             <label class="input-label">Commune البلدية <span>*</span></label>
             <div class="input-wrapper">
-                <select id="custCommune">
-                    <option value="">Commune البلدية</option>
-                </select>
+                <input type="text" id="custCommune" placeholder="Commune البلدية">
                 <div class="icon-box"><i class="fa-solid fa-map-location-dot"></i></div>
             </div>
 
@@ -131,29 +126,29 @@
             <div class="mb-5 bg-gray-50 p-2 rounded-lg">
                 <div class="delivery-option">
                     <label for="off">مكتب التوصيل (600DA)</label>
-                    <input type="radio" name="delivery" id="off" value="مكتب التوصيل (600DA)" checked>
+                    <input type="radio" name="delivery" id="off" value="مكتب التوصيل" checked>
                 </div>
                 <div class="delivery-option">
                     <label for="home">الى المنزل (800DA)</label>
-                    <input type="radio" name="delivery" id="home" value="الى المنزل (800DA)">
+                    <input type="radio" name="delivery" id="home" value="توصيل للمنزل">
                 </div>
             </div>
 
             <button onclick="sendOrder()" class="btn-black">
-                <i class="fa-solid fa-bag-shopping"></i>
                 تأكيد الطلبية
+                <i class="fa-solid fa-bag-shopping ml-2"></i>
             </button>
         </div>
     </div>
 </main>
 
-<footer class="bg-gray-50 mt-20 py-16 px-6 text-center border-t border-gray-100">
-    <p class="font-black italic text-xl mb-2">CHINEEDZ</p>
-    <div class="mt-10 text-[9px] text-gray-300 font-bold uppercase tracking-[4px]">© 2026 ChineeDZ Store</div>
+<footer class="bg-gray-50 mt-20 py-10 text-center border-t">
+    <p class="font-black italic text-xl">CHINEEDZ</p>
+    <div class="text-[9px] text-gray-300 font-bold uppercase mt-4">© 2026 ChineeDZ Store</div>
 </footer>
 
 <script>
-    // إعادة جميع الألبسة الأصلية
+    // جميع الألبسة الأصلية
     const products = [
         {id:1, cat:"ENSEMBLES", name:"Ensemble ALO", price:5500, img:"https://i.postimg.cc/KYryjMWw/IMG_20260210_225601_843.jpg"},
         {id:2, cat:"ENSEMBLES", name:"Ensemble Polo", price:5900, img:"https://i.postimg.cc/rwBs656R/IMG_20260210_222331_180.jpg"},
@@ -163,21 +158,26 @@
         {id:6, cat:"POLO", name:"T-shirt Polo Classic", price:1800, img:"https://i.postimg.cc/kGTGLZCL/IMG_20260210_222158_000.jpg"}
     ];
 
-    const wilayas = ["01-أدرار", "02-الشلف", "05-باتنة", "16-الجزائر", "19-سطيف", "25-قسنطينة", "31-وهران"];
+    // جميع الولايات الـ 58
+    const wilayas = [
+        "01-أدرار", "02-الشلف", "03-الأغواط", "04-أم البواقي", "05-باتنة", "06-بجاية", "07-بسكرة", "08-بشار", "09-البليدة", "10-البويرة",
+        "11-تمنراست", "12-تبسة", "13-تلمسان", "14-تيارت", "15-تيزي وزو", "16-الجزائر", "17-الجلفة", "18-جيجل", "19-سطيف", "20-سعيدة",
+        "21-سكيكدة", "22-سيدي بلعباس", "23-عنابة", "24-قالمة", "25-قسنطينة", "26-المدية", "27-مستغانم", "28-المسيلة", "29-معسكر", "30-ورقلة",
+        "31-وهران", "32-البيض", "33-إليزي", "34-برج بوعريريج", "35-بومرداس", "36-الطارف", "37-تندوف", "38-تيسمسيلت", "39-الوادي", "40-خنشلة",
+        "41-سوق أهراس", "42-تيبازة", "43-ميلة", "44-عين الدفلى", "45-النعامة", "46-عين تموشنت", "47-غرداية", "48-غليزان", "49-تيميمون", "50-برج باجي مختار",
+        "51-أولاد جلال", "52-بني عباس", "53-عين صالح", "54-عين قزام", "55-تقرت", "56-جانت", "57-المغير", "58-المنيعة"
+    ];
 
     function render(catFilter = 'ALL') {
         const grid = document.getElementById('mainGrid');
         grid.innerHTML = "";
         const filtered = catFilter === 'ALL' ? products : products.filter(p => p.cat === catFilter);
-        
         filtered.forEach(p => {
             grid.innerHTML += `
-                <div class="cursor-pointer group" onclick="openProduct(${p.id})">
-                    <div class="relative overflow-hidden rounded-xl mb-3 bg-gray-50">
-                        <img src="${p.img}" class="w-full aspect-[4/5] object-cover">
-                    </div>
+                <div class="cursor-pointer group bg-white p-2 rounded-xl shadow-sm" onclick="openProduct(${p.id})">
+                    <img src="${p.img}" class="w-full aspect-[4/5] object-cover rounded-lg mb-2">
                     <h4 class="text-[11px] font-bold uppercase truncate">${p.name}</h4>
-                    <p class="text-sm font-black">${p.price} DA</p>
+                    <p class="text-sm font-black text-red-600">${p.price} DA</p>
                 </div>`;
         });
     }
@@ -201,7 +201,6 @@
     function addToCart() {
         count++;
         document.getElementById('cartCount').innerText = count;
-        document.getElementById('cartList').innerHTML = `<div class='p-4 text-center font-bold border-b'>تمت الإضافة: ${document.getElementById('dTitle').innerText}</div>`;
         togglePanel('sideCart');
     }
 
@@ -216,7 +215,6 @@
     }
 
     function filter(cat) {
-        document.getElementById('currentCatTitle').innerText = cat === 'ALL' ? 'Popular Items' : cat;
         render(cat);
         showPage('homePage');
     }
@@ -228,27 +226,16 @@
         const commune = document.getElementById('custCommune').value;
         const delivery = document.querySelector('input[name="delivery"]:checked').value;
 
-        if(!name || !phone || !wilaya) return alert("يرجى ملء الاسم ورقم الهاتف والولاية");
+        if(!name || !phone || !wilaya || !commune) return alert("يرجى ملء جميع الحقول الإجبارية");
         
-        const msg = `🚀 طلب جديد من ChineeDZ:\n📦 المنتج: ${document.getElementById('dTitle').innerText}\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilaya}\n🏡 البلدية: ${commune}\n🚚 نوع التوصيل: ${delivery}`;
+        const msg = `🛍️ طلب جديد من ChineeDZ:\n📦 المنتج: ${document.getElementById('dTitle').innerText}\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilaya}\n🏡 البلدية: ${commune}\n🚚 نوع التوصيل: ${delivery}`;
         
         await fetch(`https://api.telegram.org/bot8356805368:AAEy8AILHp8lODLxPeS-Gp6dxUQduoWrtVc/sendMessage`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({chat_id: '8293116710', text: msg})
         });
-        alert("تم إرسال طلبك بنجاح! سنتصل بك قريباً.");
-    }
-
-    function updateCommunes() {
-        const comSelect = document.getElementById('custCommune');
-        comSelect.innerHTML = '<option value="">جاري التحميل...</option>';
-        setTimeout(() => {
-            comSelect.innerHTML = `
-                <option value="البلدية المركزية">البلدية المركزية</option>
-                <option value="بلدية فرعية 1">بلدية فرعية 1</option>
-            `;
-        }, 300);
+        alert("✅ تم إرسال طلبك بنجاح! سنتصل بك قريباً.");
     }
 
     window.onload = () => {
