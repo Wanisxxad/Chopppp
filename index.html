@@ -3,265 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHINEEDZ STORE</title>
+    <title>ALGERIA 58 DRYPS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #ffffff; color: #1a1a1a; margin: 0; scroll-behavior: smooth; }
-        .announcement { background: #000; color: #fff; text-align: center; padding: 10px; font-size: 13px; font-weight: 600; }
+        body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; margin: 0; }
+        .page { display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .active-page { display: block; opacity: 1; }
         
-        header { background: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; z-index: 100; }
-        .header-logo { height: 80px; width: auto; border-radius: 8px; cursor: pointer; }
+        /* الهيدر والقوائم */
+        header { background: #fff; border-bottom: 1px solid #f3f4f6; position: sticky; top: 0; z-index: 1000; }
+        .side-panel { position: fixed; top: 0; width: 280px; height: 100%; background: #fff; z-index: 2001; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px 20px; box-shadow: 5px 0 25px rgba(0,0,0,0.1); }
+        #sideMenu { right: -100%; }
+        #sideCart { left: -100%; }
+        .panel-active { right: 0 !important; left: 0 !important; }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; backdrop-filter: blur(3px); }
 
-        .side-panel { position: fixed; top: 0; width: 300px; height: 100%; background: #ffffff; z-index: 200; transition: 0.4s ease; box-shadow: 0 0 20px rgba(0,0,0,0.1); padding: 25px; overflow-y: auto; }
-        #sideMenu { right: -320px; } 
-        #sideCart { left: -320px; } 
-        .side-panel.active { right: 0 !important; left: 0 !important; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 150; }
+        /* أزرار وتصاميم */
+        .btn-black { background: #000; color: #fff; width: 100%; padding: 16px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-black:active { transform: scale(0.97); }
+        
+        .order-card { border: 1px solid #eee; border-radius: 12px; padding: 20px; background: #fff; }
+        .input-wrapper { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; }
+        .input-wrapper input, .input-wrapper select { flex: 1; padding: 12px; border: none; outline: none; font-size: 14px; background: transparent; }
+        .input-wrapper i { background: #f9f9f9; padding: 14px; border-left: 1px solid #ddd; color: #888; width: 45px; text-align: center; }
 
-        .opt-btn { background: #f5f5f5; color: #000; border: 1px solid #e5e5e5; border-radius: 10px; padding: 8px 15px; font-weight: 600; cursor: pointer; }
-        .opt-btn.active { background: #000; color: #fff; border-color: #000; }
-
-        .form-card { background: #f9f9f9; border-radius: 20px; padding: 20px; margin: 20px 0; border: 1px solid #eee; }
-        .input-box { display: flex; border: 1px solid #ddd; border-radius: 10px; overflow: hidden; margin-bottom: 12px; background: #fff; }
-        .input-box input, .input-box select { flex: 1; border: none; padding: 12px; outline: none; text-align: right; font-size: 14px; background: transparent; }
-        .input-box i { background: #fcfcfc; padding: 12px; color: #888; border-left: 1px solid #eee; }
-
-        .cart-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .cart-item img { width: 50px; height: 50px; border-radius: 5px; object-fit: cover; }
-        .product-card { background: #fff; border: 1px solid #f0f0f0; border-radius: 15px; overflow: hidden; cursor: pointer; }
+        .category-item { padding: 15px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-weight: 700; color: #333; transition: 0.2s; }
+        .category-item:hover { color: #000; padding-right: 5px; }
     </style>
 </head>
 <body>
 
-<div class="announcement">🚚 التوصيل متاح لـ 58 ولاية - الدفع عند الاستلام</div>
-
-<header>
-    <i class="fa-solid fa-bars-staggered text-2xl cursor-pointer" onclick="openPanel('sideMenu')"></i>
-    <img src="https://i.postimg.cc/pLK2rngY/IMG-20260301-222638-543.jpg" class="header-logo" onclick="location.reload()">
-    <div class="relative cursor-pointer" onclick="openPanel('sideCart')">
-        <i class="fa-solid fa-bag-shopping text-2xl"></i>
-        <span id="cartCount" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center">0</span>
+<header class="flex justify-between items-center px-5 py-4">
+    <div class="flex items-center gap-5">
+        <i class="fa-solid fa-bars-staggered text-xl cursor-pointer" onclick="togglePanel('sideMenu')"></i>
+        <i class="fa-solid fa-magnifying-glass text-xl cursor-pointer" onclick="alert('البحث مفعل: ابدأ الكتابة...')"></i>
+    </div>
+    <img src="https://i.postimg.cc/pLK2rngY/IMG-20260301-222638-543.jpg" class="h-8 cursor-pointer" onclick="showPage('homePage')">
+    <div class="relative cursor-pointer" onclick="togglePanel('sideCart')">
+        <i class="fa-solid fa-bag-shopping text-xl"></i>
+        <span id="cartCount" class="absolute -top-2 -right-2 bg-black text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
     </div>
 </header>
 
-<div class="overlay" id="overlay" onclick="closePanels()"></div>
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
 
-<div class="side-panel" id="sideMenu">
-    <div class="flex justify-between items-center mb-8 border-b pb-4">
-        <span class="text-xl font-bold">الأقسام</span>
-        <i class="fa-solid fa-xmark text-2xl cursor-pointer" onclick="closePanels()"></i>
+<div id="sideMenu" class="side-panel">
+    <div class="flex justify-between items-center mb-10">
+        <span class="font-black text-xl italic uppercase">Categories</span>
+        <i class="fa-solid fa-xmark text-xl" onclick="closeAll()"></i>
     </div>
-    <ul class="space-y-6 font-bold text-gray-700">
-        <li class="flex items-center gap-3 cursor-pointer" onclick="filterProducts('all', true)"><i class="fa-solid fa-border-all"></i> الكل</li>
-        <li class="flex items-center gap-3 cursor-pointer" onclick="filterProducts('ensemble', true)"><i class="fa-solid fa-shirt"></i> أطقم</li>
-        <li class="flex items-center gap-3 cursor-pointer" onclick="filterProducts('veste', true)"><i class="fa-solid fa-vest"></i> فيستات</li>
-        <li class="flex items-center gap-3 cursor-pointer" onclick="filterProducts('hoodie', true)"><i class="fa-solid fa-user-ninja"></i> هوديز</li>
-        <li class="flex items-center gap-3 cursor-pointer" onclick="filterProducts('pants', true)"><i class="fa-solid fa-pants"></i> سراويل</li>
-    </ul>
+    <div class="flex flex-col">
+        <div class="category-item" onclick="filter('ALL')">جميع المنتجات (ALL)</div>
+        <div class="category-item" onclick="filter('ENSEMBLES')">أطقم (ENSEMBLES)</div>
+        <div class="category-item" onclick="filter('BAGGY')">سراويل واسعة (BAGGY PANTS)</div>
+        <div class="category-item" onclick="filter('VESTE')">سترات (VESTE & ZIPPER)</div>
+        <div class="category-item" onclick="filter('TSHIRT')">تيشرتات (T-SHIRTS)</div>
+        <div class="category-item" onclick="filter('POLO')">بولو (POLO SHIRTS)</div>
+        <div class="category-item" onclick="filter('ACCESS')">إكسسوارات (ACCESSORIES)</div>
+    </div>
+    <div class="mt-10 pt-10 border-t">
+        <p class="text-[10px] font-bold text-gray-400 uppercase mb-4">Support</p>
+        <div class="flex gap-4 text-xl">
+            <i class="fa-brands fa-instagram"></i>
+            <i class="fa-brands fa-facebook"></i>
+            <i class="fa-brands fa-whatsapp"></i>
+        </div>
+    </div>
 </div>
 
-<div class="side-panel" id="sideCart">
-    <div class="flex justify-between items-center mb-8 border-b pb-4">
-        <span class="text-xl font-bold">سلة التسوق</span>
-        <i class="fa-solid fa-xmark text-2xl cursor-pointer" onclick="closePanels()"></i>
+<div id="sideCart" class="side-panel">
+    <div class="flex justify-between items-center mb-10">
+        <span class="font-black text-xl italic">My Bag</span>
+        <i class="fa-solid fa-xmark text-xl" onclick="closeAll()"></i>
     </div>
-    <div id="cartItems"><p class="text-center text-gray-400 mt-10">السلة فارغة</p></div>
-    <div id="cartTotal" class="mt-10 pt-4 border-t hidden">
-        <div class="flex justify-between font-bold mb-4"><span>الإجمالي:</span><span id="totalPrice">0 DA</span></div>
-        <button onclick="closePanels(); window.scrollTo({top: document.getElementById('orderForm').offsetTop - 100, behavior:'smooth'});" class="w-full bg-black text-white py-3 rounded-xl font-bold">إتمام الطلب</button>
+    <div id="cartList" class="space-y-4">
+        <p class="text-center text-gray-400 mt-20">حقيبتك فارغة</p>
     </div>
 </div>
 
-<main class="max-w-md mx-auto p-5">
-    <div id="mainDisplay">
-        <img id="mainImg" src="https://i.postimg.cc/bv1Jqd8Z/IMG_20260210_222332_760.jpg" class="w-full h-[400px] object-cover rounded-3xl mb-4 shadow-sm">
-        <h1 id="mainTitle" class="text-2xl font-bold mb-1 uppercase">ENSEMBLE CORTEIZ 2026</h1>
-        <div class="flex items-center gap-3 mb-6">
-            <span id="mainPrice" class="text-xl font-black">3,200 DA</span>
-            <span class="text-gray-400 line-through text-sm">6,900 DA</span>
+<main class="p-4 max-w-lg mx-auto min-h-[80vh]">
+    <div id="homePage" class="page active-page">
+        <div class="flex justify-between items-end mb-6">
+            <h2 id="currentCatTitle" class="text-xl font-black italic uppercase">Popular Items</h2>
+            <span class="text-[10px] font-bold text-gray-400">58 Wilayas Delivery</span>
         </div>
-
-        <div class="mb-4">
-            <p class="text-xs font-bold text-gray-500 mb-2">اللون</p>
-            <div class="flex gap-2">
-                <button class="opt-btn color-opt active" onclick="selectOpt(this, 'color')">Gris</button>
-                <button class="opt-btn color-opt" onclick="selectOpt(this, 'color')">Noir</button>
-            </div>
-        </div>
-
-        <div class="mb-6">
-            <p class="text-xs font-bold text-gray-500 mb-2">المقاس</p>
-            <div class="flex gap-2">
-                <button class="opt-btn active" onclick="selectOpt(this, 'size')">M</button>
-                <button class="opt-btn" onclick="selectOpt(this, 'size')">L</button>
-                <button class="opt-btn" onclick="selectOpt(this, 'size')">XL</button>
-            </div>
-        </div>
-
-        <button onclick="addToCart()" class="w-full border-2 border-black text-black py-3 rounded-xl font-bold mb-8 hover:bg-black hover:text-white transition">إضافة إلى السلة 🛒</button>
-
-        <div class="form-card" id="orderForm">
-            <h3 class="text-center font-bold mb-4">بيانات الطلب</h3>
-            <div class="input-box"><input type="text" id="custName" placeholder="الإسم الكامل"><i class="fa-solid fa-user"></i></div>
-            <div class="input-box"><input type="tel" id="custPhone" placeholder="رقم الهاتف"><i class="fa-solid fa-phone"></i></div>
-            
-            <div class="input-box">
-                <select id="custWilaya">
-                    <option value="">اختر الولاية (58 ولاية)</option>
-                </select>
-                <i class="fa-solid fa-map"></i>
-            </div>
-
-            <div class="input-box"><input type="text" id="custCommune" placeholder="البلدية"><i class="fa-solid fa-map-marker-alt"></i></div>
-            <button onclick="submitOrder()" class="w-full bg-black text-white py-4 rounded-xl font-bold text-lg">تأكيد الشراء الآن</button>
-        </div>
+        <div class="grid grid-cols-2 gap-4" id="mainGrid"></div>
     </div>
 
-    <h2 class="text-lg font-bold mb-4 mt-10 border-r-4 border-black pr-2" id="scrollPoint">منتجات أخرى</h2>
-    <div class="grid grid-cols-2 gap-4" id="otherProducts"></div>
+    <div id="detailsPage" class="page">
+        <button onclick="showPage('homePage')" class="text-xs font-bold text-gray-400 mb-4 inline-flex items-center">
+            <i class="fa-solid fa-chevron-right ml-1"></i> العودة للتسوق
+        </button>
+        <img id="dImg" src="" class="w-full rounded-2xl mb-6 shadow-sm">
+        <h1 id="dTitle" class="text-2xl font-black mb-1 uppercase italic"></h1>
+        <div class="text-xl font-bold mb-8" id="dPrice"></div>
+        
+        <button onclick="addToCart()" class="btn-black mb-12">أضف إلى حقيبة التسوق</button>
+
+        <div class="order-card shadow-sm">
+            <h3 class="text-center font-black text-lg mb-6 underline decoration-2 underline-offset-8">إتمام الطلب السريع</h3>
+            <div class="input-wrapper">
+                <input type="text" id="custName" placeholder="الاسم الكامل">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="input-wrapper">
+                <input type="tel" id="custPhone" placeholder="رقم الهاتف">
+                <i class="fa-solid fa-phone"></i>
+            </div>
+            <div class="input-wrapper">
+                <select id="custWilaya"></select>
+                <i class="fa-solid fa-map-pin"></i>
+            </div>
+            <button onclick="sendOrder()" class="btn-black mt-2">تأكيد طلب الشراء</button>
+        </div>
+    </div>
 </main>
 
+<footer class="bg-gray-50 mt-20 py-16 px-6 text-center border-t border-gray-100">
+    <p class="font-black italic text-xl mb-2">ALGERIA 58 DRYPS</p>
+    <p class="text-xs text-gray-400 mb-8 uppercase tracking-widest">Premium Streetwear Store</p>
+    <button class="btn-black !w-auto px-12 mx-auto" onclick="window.open('https://t.me/Dryps58', '_blank')">تواصلوا معنا</button>
+    <div class="mt-10 text-[9px] text-gray-300 font-bold uppercase tracking-[4px]">© 2026 Algeria 58 Dryps</div>
+</footer>
+
 <script>
-const token = "8356805368:AAEy8AILHp8lODLxPeS-Gp6dxUQduoWrtVc";
-const chat_id = "8293116710";
+    const products = [
+        {id:1, cat:"ENSEMBLES", name:"Ensemble ALO", price:5500, img:"https://i.postimg.cc/KYryjMWw/IMG_20260210_225601_843.jpg"},
+        {id:2, cat:"ENSEMBLES", name:"Ensemble Polo", price:5900, img:"https://i.postimg.cc/rwBs656R/IMG_20260210_222331_180.jpg"},
+        {id:3, cat:"ENSEMBLES", name:"Ensemble Synical", price:5900, img:"https://i.postimg.cc/3xx8P9fc/IMG_20260210_224344_638.jpg"},
+        {id:4, cat:"BAGGY", name:"Baggy Streetwear", price:2900, img:"https://i.postimg.cc/qMW56KDm/IMG_20260215_200828_193.jpg"},
+        {id:5, cat:"VESTE", name:"Veste Zipper", price:4500, img:"https://i.postimg.cc/kXLpRSYQ/IMG_20260215_200825_775.jpg"},
+        {id:6, cat:"POLO", name:"T-shirt Polo Classic", price:1800, img:"https://i.postimg.cc/kGTGLZCL/IMG_20260210_222158_000.jpg"}
+    ];
 
-// جميع الولايات الجزائرية
-const wilayas = [
-    "01-أدرار", "02-الشلف", "03-الأغواط", "04-أم البواقي", "05-باتنة", "06-بجاية", "07-بسكرة", "08-بشار", "09-البليدة", "10-البويرة",
-    "11-تمنراست", "12-تبسة", "13-تلمسان", "14-تيارت", "15-تيزي وزو", "16-الجزائر", "17-الجلفة", "18-جيجل", "19-سطيف", "20-سعيدة",
-    "21-سكيكدة", "22-سيدي بلعباس", "23-عنابة", "24-قالمة", "25-قسنطينة", "26-المدية", "27-مستغانم", "28-المسيلة", "29-معسكر", "30-ورقلة",
-    "31-وهران", "32-البيض", "33-إليزي", "34-برج بوعريريج", "35-بومرداس", "36-الطارف", "37-تندوف", "38-تيسمسيلت", "39-الوادي", "40-خنشلة",
-    "41-سوق أهراس", "42-تيبازة", "43-ميلة", "44-عين الدفلة", "45-النعامة", "46-عين تموشنت", "47-غرداية", "48-غليزان", "49-تيميمون", "50-برج باجي مختار",
-    "51-أولاد جلال", "52-بني عباس", "53-عين صالح", "54-عين قزام", "55-تقرت", "56-جانت", "57-المغير", "58-المنيعة"
-];
+    const wilayas = ["16-الجزائر", "31-وهران", "25-قسنطينة", "06-بجاية", "05-باتنة", "19-سطيف", "23-عنابة", "13-تلمسان"];
 
-const products = [
-    { title: "Ensemble Polo Summer", price: 5900, img: "https://i.postimg.cc/KYryjMWw/IMG_20260210_225601_843.jpg", category: "ensemble" },
-    { title: "Baggy Pants Premium", price: 2900, img: "https://i.postimg.cc/Gpp4xb1h/IMG_20260210_223009_331.jpg", category: "pants" },
-    { title: "Hoodie Synical High", price: 4500, img: "https://i.postimg.cc/mggL0Vp0/IMG_20260210_224350_951.jpg", category: "hoodie" },
-    { title: "Veste Corteiz Special", price: 3200, img: "https://i.postimg.cc/bv1Jqd8Z/IMG_20260210_222332_760.jpg", category: "veste" }
-];
-
-let cart = [];
-let currentSelection = { color: 'Gris', size: 'M' };
-
-// ملء الولايات تلقائياً
-function fillWilayas() {
-    const select = document.getElementById('custWilaya');
-    wilayas.forEach(w => {
-        let opt = document.createElement('option');
-        opt.value = w;
-        opt.innerHTML = w;
-        select.appendChild(opt);
-    });
-}
-
-function openPanel(id) {
-    document.getElementById(id).classList.add('active');
-    document.getElementById('overlay').style.display = 'block';
-}
-
-function closePanels() {
-    document.querySelectorAll('.side-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('overlay').style.display = 'none';
-}
-
-function selectOpt(btn, type) {
-    btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentSelection[type] = btn.innerText;
-}
-
-function filterProducts(cat, scroll = false) {
-    const container = document.getElementById('otherProducts');
-    container.innerHTML = "";
-    const list = cat === 'all' ? products : products.filter(p => p.category === cat);
-    list.forEach(p => {
-        container.innerHTML += `
-            <div class="product-card p-2 shadow-sm" onclick="loadProduct('${p.title}')">
-                <img src="${p.img}" class="w-full h-40 object-cover rounded-xl mb-2">
-                <p class="text-[10px] font-bold truncate">${p.title}</p>
-                <p class="text-xs font-black">${p.price} DA</p>
-            </div>`;
-    });
-    if(scroll) {
-        closePanels();
-        window.scrollTo({top: document.getElementById('scrollPoint').offsetTop - 100, behavior: 'smooth'});
+    function render(catFilter = 'ALL') {
+        const grid = document.getElementById('mainGrid');
+        grid.innerHTML = "";
+        const filtered = catFilter === 'ALL' ? products : products.filter(p => p.cat === catFilter);
+        
+        filtered.forEach(p => {
+            grid.innerHTML += `
+                <div class="cursor-pointer group" onclick="openProduct(${p.id})">
+                    <div class="relative overflow-hidden rounded-xl mb-3 bg-gray-50">
+                        <img src="${p.img}" class="w-full aspect-[4/5] object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <h4 class="text-[11px] font-bold uppercase truncate">${p.name}</h4>
+                    <p class="text-sm font-black">${p.price} DA</p>
+                </div>`;
+        });
     }
-}
 
-function loadProduct(title) {
-    const p = products.find(i => i.title === title);
-    if(p) {
-        document.getElementById('mainImg').src = p.img;
-        document.getElementById('mainTitle').innerText = p.title;
-        document.getElementById('mainPrice').innerText = p.price + " DA";
-        window.scrollTo({top: 0, behavior: 'smooth'});
+    function openProduct(id) {
+        const p = products.find(x => x.id == id);
+        showPage('detailsPage');
+        document.getElementById('dImg').src = p.img;
+        document.getElementById('dTitle').innerText = p.name;
+        document.getElementById('dPrice').innerText = `${p.price} DA`;
+        window.scrollTo(0,0);
     }
-}
 
-function addToCart() {
-    cart.push({
-        title: document.getElementById('mainTitle').innerText,
-        price: document.getElementById('mainPrice').innerText,
-        img: document.getElementById('mainImg').src,
-        color: currentSelection.color,
-        size: currentSelection.size
-    });
-    updateCartUI();
-    openPanel('sideCart');
-}
-
-function updateCartUI() {
-    const container = document.getElementById('cartItems');
-    document.getElementById('cartCount').innerText = cart.length;
-    if(cart.length === 0) {
-        container.innerHTML = '<p class="text-center text-gray-400 mt-10">السلة فارغة</p>';
-        document.getElementById('cartTotal').classList.add('hidden');
-    } else {
-        container.innerHTML = cart.map(i => `
-            <div class="cart-item">
-                <img src="${i.img}">
-                <div class="flex-1">
-                    <p class="text-[11px] font-bold">${i.title}</p>
-                    <p class="text-[10px] text-gray-500">${i.color} | ${i.size}</p>
-                </div>
-            </div>
-        `).join('');
-        document.getElementById('cartTotal').classList.remove('hidden');
-        document.getElementById('totalPrice').innerText = cart.reduce((s, i) => s + parseInt(i.price), 0) + " DA";
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+        document.getElementById(id).classList.add('active-page');
+        closeAll();
     }
-}
 
-async function submitOrder() {
-    const n = document.getElementById('custName').value;
-    const p = document.getElementById('custPhone').value;
-    const w = document.getElementById('custWilaya').value;
-    const c = document.getElementById('custCommune').value;
+    let count = 0;
+    function addToCart() {
+        count++;
+        document.getElementById('cartCount').innerText = count;
+        document.getElementById('cartList').innerHTML = `<div class='p-4 text-center font-bold border-b'>تمت الإضافة: ${document.getElementById('dTitle').innerText}</div>`;
+        togglePanel('sideCart');
+    }
 
-    if(!n || !p || !w || !c) return alert("يرجى إكمال كافة البيانات");
+    function togglePanel(id) {
+        document.getElementById(id).classList.add('panel-active');
+        document.getElementById('overlay').style.display = 'block';
+    }
 
-    let items = cart.map(i => `- ${i.title} (${i.color}/${i.size})`).join('\n');
-    if(cart.length === 0) items = `- ${document.getElementById('mainTitle').innerText} (${currentSelection.color}/${currentSelection.size})`;
+    function closeAll() {
+        document.querySelectorAll('.side-panel').forEach(p => p.classList.remove('panel-active'));
+        document.getElementById('overlay').style.display = 'none';
+    }
 
-    const msg = `🚀 *طلب جديد من المتجر*\n\n📦 *المنتجات:*\n${items}\n\n👤 *الزبون:* ${n}\n📞 *الهاتف:* ${p}\n📍 *العنوان:* ${w} - ${c}`;
+    function filter(cat) {
+        document.getElementById('currentCatTitle').innerText = cat === 'ALL' ? 'Popular Items' : cat;
+        render(cat);
+        showPage('homePage');
+    }
 
-    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({chat_id, text: msg, parse_mode: 'Markdown'})
-    });
-    alert("تم الطلب بنجاح! سنتصل بك قريباً.");
-    cart = []; updateCartUI();
-}
+    async function sendOrder() {
+        const name = document.getElementById('custName').value;
+        const phone = document.getElementById('custPhone').value;
+        if(!name || !phone) return alert("يرجى ملء الاسم ورقم الهاتف");
+        
+        const msg = `🚀 طلب جديد: ${document.getElementById('dTitle').innerText}\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 الولاية: ${document.getElementById('custWilaya').value}`;
+        
+        await fetch(`https://api.telegram.org/bot8356805368:AAEy8AILHp8lODLxPeS-Gp6dxUQduoWrtVc/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({chat_id: '8293116710', text: msg})
+        });
+        alert("تم إرسال طلبك بنجاح! سنتصل بك قريباً.");
+    }
 
-window.onload = () => {
-    fillWilayas();
-    filterProducts('all', false); // false تمنع النزول التلقائي عند التحميل
-};
+    window.onload = () => {
+        render();
+        const sel = document.getElementById('custWilaya');
+        sel.add(new Option("اختيار الولاية", ""));
+        wilayas.forEach(w => sel.add(new Option(w, w)));
+    }
 </script>
 </body>
 </html>
