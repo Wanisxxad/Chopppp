@@ -13,8 +13,22 @@
         .active-page { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        header { background: #fff; border-bottom: 1px solid #f2f2f2; position: sticky; top: 0; z-index: 1000; }
+        header { background: #fff; border-bottom: 1px solid #f2f2f2; position: sticky; top: 0; z-index: 1000; height: 100px; }
         
+        /* تنسيق اللوجو ليكون كبيراً وفي المنتصف */
+        .logo-container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px; /* حجم اللوجو */
+        }
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
         .side-panel { 
             position: fixed; top: 0; width: 320px; height: 100%; 
             background: #fff; z-index: 2005; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -61,11 +75,13 @@
 
 <div class="overlay" id="overlay" onclick="closeAll()"></div>
 
-<header class="flex justify-between items-center px-6 py-5">
+<header class="flex justify-between items-center px-6 py-5 relative">
     <i class="fa-solid fa-bars-staggered text-xl cursor-pointer" onclick="openPanel('sideMenu')"></i>
-    <div class="text-2xl font-black italic tracking-tighter cursor-pointer" onclick="showPage('homePage')">
-        CHINEE<span class="text-gray-300">DZ</span>
+    
+    <div class="logo-container cursor-pointer" onclick="showPage('homePage')">
+        <img src="https://i.postimg.cc/CKWWbdgn/IMG-20260304-140312.jpg" alt="ChineeDZ Logo">
     </div>
+
     <div class="relative cursor-pointer" onclick="openPanel('sideCart')">
         <i class="fa-solid fa-cart-shopping text-xl"></i>
         <span id="cartCount" class="absolute -top-2 -right-2 bg-black text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
@@ -182,7 +198,9 @@
 </main>
 
 <footer class="mt-20 py-12 text-center border-t border-gray-50">
-    <p class="font-black italic text-black tracking-widest text-xl">CHINEEDZ</p>
+    <div class="w-24 mx-auto mb-4 grayscale opacity-30">
+        <img src="https://i.postimg.cc/CKWWbdgn/IMG-20260304-140312.jpg" alt="Logo">
+    </div>
     <p class="text-[9px] mt-3 font-bold text-gray-400 uppercase tracking-[5px]">© 2026 Crafted in Algeria</p>
 </footer>
 
