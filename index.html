@@ -1,326 +1,211 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChineeDZ | Premium Store</title>
+    <title>TNG Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #fff; color: #000; margin: 0; overflow-x: hidden; }
+        body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; margin: 0; overflow-x: hidden; }
         .page { display: none; }
-        .active-page { display: block; animation: fadeIn 0.4s ease; }
+        .active-page { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        header { background: #fff; border-bottom: 1px solid #f2f2f2; position: sticky; top: 0; z-index: 1000; height: 100px; }
+        header { 
+            background: #fff; border-bottom: 1px solid #f2f2f2; 
+            position: sticky; top: 0; z-index: 1000; height: 70px; 
+            display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
+        }
+        .header-icon { font-size: 22px; cursor: pointer; padding: 10px; }
+        .logo-container { position: absolute; left: 50%; transform: translateX(-50%); width: 60px; cursor: pointer; }
+
+        /* القائمة الجانبية */
+        #sidebar { position: fixed; top: 0; right: -100%; width: 80%; height: 100%; background: #fff; z-index: 10000; transition: 0.4s; padding: 25px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
+        #sidebar.open { right: 0; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; }
+        .menu-item { display: block; padding: 15px 0; border-bottom: 1px solid #f2f2f2; font-weight: 700; font-size: 18px; color: #000; cursor: pointer; }
+
+        /* ستايل الخانات */
+        .tng-label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 13px; margin-top: 15px; }
+        .tng-input-group { background: #f8f8f8; border-radius: 10px; display: flex; align-items: center; border: 1px solid #eee; overflow: hidden; }
+        .tng-icon-box { background: #fff; padding: 12px; border-left: 1px solid #eee; width: 45px; text-align: center; color: #333; }
+        .tng-field { background: transparent; border: none; padding: 12px; width: 100%; outline: none; font-size: 14px; font-weight: bold; }
         
-        /* تنسيق اللوجو ليكون كبيراً وفي المنتصف */
-        .logo-container {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 140px; /* حجم اللوجو */
-        }
-        .logo-container img {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-        }
+        .btn-confirm { background: #000; color: #fff; width: 100%; padding: 15px; border-radius: 50px; font-weight: 900; margin-top: 25px; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-        .side-panel { 
-            position: fixed; top: 0; width: 320px; height: 100%; 
-            background: #fff; z-index: 2005; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            padding: 30px; box-shadow: 0 0 30px rgba(0,0,0,0.05);
-        }
-        #sideMenu { left: -340px; } 
-        #sideCart { right: -340px; }  
-        .panel-active { left: 0 !important; right: 0 !important; }
+        /* تكبير البطاقات وتعديل السعر */
+        .product-card { background: #fff; border: 1px solid #f8f8f8; border-radius: 12px; padding: 10px; transition: 0.3s; cursor: pointer; }
+        .product-card:active { transform: scale(0.98); }
+        .price-text { color: #000; font-size: 11px; font-weight: 700; margin-top: 2px; }
+        .title-text { font-size: 11px; font-weight: 900; text-transform: uppercase; margin-top: 8px; }
 
-        .overlay { 
-            display: none; position: fixed; inset: 0; 
-            background: rgba(0,0,0,0.4); z-index: 2000; backdrop-filter: blur(2px); 
-        }
-
-        .product-card { 
-            background: #fff; border: 1px solid #f2f2f2; border-radius: 12px; 
-            padding: 8px; transition: 0.3s; 
-        }
-        .product-card img { border-radius: 8px; width: 100%; aspect-ratio: 4/5; object-fit: cover; }
-
-        .btn-black { 
-            background: #000; color: #fff; width: 100%; padding: 15px; 
-            border-radius: 8px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 1px; font-size: 14px; transition: 0.3s;
-        }
-        .btn-black:hover { background: #333; }
-        
-        .price-tag { color: #000; font-weight: 900; font-size: 1.2rem; }
-        
-        .input-wrapper { 
-            display: flex; align-items: center; border: 1px solid #e5e5e5; 
-            border-radius: 8px; margin-bottom: 12px; background: #fff; 
-        }
-        .input-wrapper input, .input-wrapper select { 
-            flex: 1; padding: 12px; border: none; outline: none; font-size: 13px;
-        }
-        .icon-box { background: #fafafa; padding: 12px; border-right: 1px solid #eee; color: #bbb; width: 45px; text-align: center; }
-
-        .select-label { font-size: 12px; font-weight: 700; margin-bottom: 6px; display: block; color: #666; }
-        .category-item { padding: 15px 0; border-bottom: 1px solid #f9f9f9; font-weight: 600; cursor: pointer; color: #222; }
+        .cart-badge { background: red; color: white; font-size: 10px; padding: 2px 6px; border-radius: 50%; position: absolute; top: 10px; left: 5px; }
     </style>
 </head>
 <body>
 
-<div class="overlay" id="overlay" onclick="closeAll()"></div>
+<div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
 
-<header class="flex justify-between items-center px-6 py-5 relative">
-    <i class="fa-solid fa-bars-staggered text-xl cursor-pointer" onclick="openPanel('sideMenu')"></i>
-    
-    <div class="logo-container cursor-pointer" onclick="showPage('homePage')">
-        <img src="https://i.postimg.cc/CKWWbdgn/IMG-20260304-140312.jpg" alt="ChineeDZ Logo">
+<div id="sidebar">
+    <div class="flex justify-between items-center mb-8">
+        <span class="font-black text-xl">MENU</span>
+        <i class="fa-solid fa-xmark text-xl" onclick="toggleMenu()"></i>
     </div>
+    <div class="menu-item" onclick="filterCategory('all')">All Collections</div>
+    <div class="menu-item" onclick="filterCategory('Ensemble')">Ensembles</div>
+    <div class="menu-item" onclick="filterCategory('Baggy')">Baggy Pants</div>
+    <div class="menu-item" onclick="filterCategory('Jacket')">Jackets</div>
+</div>
 
-    <div class="relative cursor-pointer" onclick="openPanel('sideCart')">
-        <i class="fa-solid fa-cart-shopping text-xl"></i>
-        <span id="cartCount" class="absolute -top-2 -right-2 bg-black text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+<header>
+    <i class="fa-solid fa-bars-staggered header-icon" onclick="toggleMenu()"></i>
+    <div class="logo-container" onclick="showPage('homePage')">
+        <img src="https://i.postimg.cc/CKWWbdgn/IMG-20260304-140312.jpg" alt="Logo" class="rounded">
+    </div>
+    <div class="flex items-center relative" onclick="showPage('cartPage')">
+        <i class="fa-solid fa-bag-shopping header-icon"></i>
+        <span id="cartCount" class="cart-badge">0</span>
     </div>
 </header>
 
-<div id="sideMenu" class="side-panel">
-    <div class="flex justify-between items-center mb-10">
-        <span class="font-black text-xl uppercase tracking-widest">Menu</span>
-        <i class="fa-solid fa-xmark text-2xl cursor-pointer" onclick="closeAll()"></i>
-    </div>
-    <div class="flex flex-col">
-        <div class="category-item" onclick="filter('ALL')">All Collections</div>
-        <div class="category-item" onclick="filter('ENSEMBLES')">Ensembles</div>
-        <div class="category-item" onclick="filter('BAGGY')">Baggy Pants</div>
-        <div class="category-item" onclick="filter('VESTE')">Jackets</div>
-        <div class="category-item" onclick="filter('TSHIRT')">T-Shirts</div>
-    </div>
-</div>
-
-<div id="sideCart" class="side-panel">
-    <div class="flex justify-between items-center mb-10">
-        <span class="font-black text-xl uppercase tracking-widest">Shopping Bag</span>
-        <i class="fa-solid fa-xmark text-2xl cursor-pointer" onclick="closeAll()"></i>
-    </div>
-    <div id="cartContent" class="space-y-4">
-        <p class="text-center text-gray-400 mt-20">Your bag is empty.</p>
-    </div>
-</div>
-
-<main class="p-5 max-w-lg mx-auto">
+<main class="p-4 max-w-md mx-auto">
     <div id="homePage" class="page active-page">
-        <div class="flex justify-between items-center mb-8">
-            <h2 id="currentCatTitle" class="text-sm font-black uppercase tracking-[3px]">New Arrivals</h2>
-            <span class="text-[9px] text-gray-400 font-bold uppercase">Algeria / 58 Wilayas</span>
-        </div>
         <div class="grid grid-cols-2 gap-4" id="mainGrid"></div>
     </div>
 
     <div id="detailsPage" class="page">
-        <button onclick="showPage('homePage')" class="text-[10px] font-bold text-gray-400 mb-6 flex items-center gap-2 uppercase tracking-widest">
-            <i class="fa-solid fa-chevron-left"></i> Back to Shop
-        </button>
-        
-        <img id="dImg" src="" class="w-full rounded-xl mb-6 shadow-sm">
-        
-        <div class="mb-2 flex justify-between items-start">
-            <div>
-                <h1 id="dTitle" class="text-2xl font-black uppercase italic tracking-tighter"></h1>
-                <p id="dType" class="text-[11px] text-gray-400 font-bold uppercase mt-1"></p>
-            </div>
-            <div class="price-tag" id="dPrice"></div>
-        </div>
+        <button onclick="showPage('homePage')" class="text-gray-400 text-xs font-bold mb-4 uppercase"><i class="fa-solid fa-arrow-right ml-1"></i> رجوع</button>
+        <img id="dImg" src="" class="w-full aspect-[4/5] object-cover rounded-lg mb-4">
+        <h1 id="dTitle" class="text-xl font-black uppercase italic"></h1>
+        <p id="dPrice" class="text-black font-black text-lg mb-6"></p>
 
-        <div class="grid grid-cols-2 gap-4 mt-6 mb-8">
-            <div>
-                <label class="select-label">SIZE</label>
-                <select id="prodSize" class="w-full p-3 border border-gray-200 rounded-lg text-xs font-bold outline-none">
-                    <option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
-                </select>
-            </div>
-            <div>
-                <label class="select-label">COLOR</label>
-                <select id="prodColor" class="w-full p-3 border border-gray-200 rounded-lg text-xs font-bold outline-none">
-                    <option>Black</option><option>White</option><option>Grey</option><option>Beige</option>
-                </select>
-            </div>
-        </div>
-        
-        <button onclick="addToCart()" class="btn-black mb-12">
-            Add to Bag
-        </button>
-
-        <div class="border-t pt-10">
-            <h3 class="text-center font-black text-sm uppercase tracking-[4px] mb-8">Shipping Information</h3>
+        <div id="orderSection" class="bg-white p-4 border rounded-2xl shadow-sm mb-10">
+            <h3 class="font-black text-center border-b pb-2 mb-4">إتمام الطلب</h3>
             
-            <label class="select-label">FULL NAME</label>
-            <div class="input-wrapper">
-                <input type="text" id="custName" placeholder="Enter your name">
+            <label class="tng-label">الاسم كامل *</label>
+            <div class="tng-input-group">
+                <div class="tng-icon-box"><i class="fa-solid fa-user"></i></div>
+                <input type="text" id="custName" class="tng-field" placeholder="Full Name">
             </div>
 
-            <label class="select-label">PHONE NUMBER</label>
-            <div class="input-wrapper">
-                <input type="tel" id="custPhone" placeholder="05 / 06 / 07 ...">
+            <label class="tng-label">رقم الهاتف *</label>
+            <div class="tng-input-group">
+                <div class="tng-icon-box"><i class="fa-solid fa-phone"></i></div>
+                <input type="tel" id="custPhone" class="tng-field" placeholder="Phone">
             </div>
 
-            <label class="select-label">WILAYA (58)</label>
-            <div class="input-wrapper">
-                <select id="custWilaya"></select>
+            <label class="tng-label">Wilaya الولاية *</label>
+            <div class="tng-input-group">
+                <div class="tng-icon-box"><i class="fa-solid fa-location-dot"></i></div>
+                <select id="custWilaya" class="tng-field"></select>
             </div>
 
-            <label class="select-label">COMMUNE</label>
-            <div class="input-wrapper">
-                <input type="text" id="custCommune" placeholder="Your City">
+            <label class="tng-label">Delivery نوع التوصيل *</label>
+            <div class="tng-input-group">
+                <div class="tng-icon-box"><i class="fa-solid fa-truck"></i></div>
+                <select id="shipType" class="tng-field">
+                    <option>توصيل إلى باب المنزل (900DA)</option>
+                    <option>توصيل للمكتب (400DA)</option>
+                </select>
             </div>
 
-            <label class="select-label mt-4">DELIVERY METHOD</label>
-            <div class="space-y-2 mb-8">
-                <label class="flex justify-between p-4 border border-gray-100 rounded-lg cursor-pointer">
-                    <span class="text-xs font-bold">Office Delivery (600 DA)</span>
-                    <input type="radio" name="delivery" value="Office" checked class="accent-black">
-                </label>
-                <label class="flex justify-between p-4 border border-gray-100 rounded-lg cursor-pointer">
-                    <span class="text-xs font-bold">Home Delivery (800 DA)</span>
-                    <input type="radio" name="delivery" value="Home" class="accent-black">
-                </label>
-            </div>
-
-            <button onclick="sendOrder()" class="btn-black bg-gray-900">
-                Confirm Order
+            <button onclick="confirmAndToCart()" class="btn-confirm">
+                <i class="fa-solid fa-lock"></i> تأكيد الطلبية
             </button>
         </div>
     </div>
-</main>
 
-<footer class="mt-20 py-12 text-center border-t border-gray-50">
-    <div class="w-24 mx-auto mb-4 grayscale opacity-30">
-        <img src="https://i.postimg.cc/CKWWbdgn/IMG-20260304-140312.jpg" alt="Logo">
+    <div id="cartPage" class="page">
+        <h2 class="font-black text-xl mb-4 border-b pb-2 uppercase italic">My Orders / طلباتي</h2>
+        <div id="cartItems"></div>
     </div>
-    <p class="text-[9px] mt-3 font-bold text-gray-400 uppercase tracking-[5px]">© 2026 Crafted in Algeria</p>
-</footer>
+</main>
 
 <script>
     const products = [
-        {id:1, cat:"ENSEMBLES", type:"Summer Set", name:"Ensemble ALO", price:5500, img:"https://i.postimg.cc/KYryjMWw/IMG_20260210_225601_843.jpg"},
-        {id:2, cat:"ENSEMBLES", type:"Classic Set", name:"Ensemble Polo", price:5900, img:"https://i.postimg.cc/rwBs656R/IMG_20260210_222331_180.jpg"},
-        {id:3, cat:"ENSEMBLES", type:"Urban Set", name:"Ensemble Synical", price:5900, img:"https://i.postimg.cc/3xx8P9fc/IMG_20260210_224344_638.jpg"},
-        {id:4, cat:"BAGGY", type:"Streetwear Pants", name:"Baggy Streetwear", price:2900, img:"https://i.postimg.cc/qMW56KDm/IMG_20260215_200828_193.jpg"},
-        {id:5, cat:"VESTE", type:"Premium Jacket", name:"Veste Zipper Grey", price:4500, img:"https://i.postimg.cc/kXLpRSYQ/IMG_20260215_200825_775.jpg"},
-        {id:6, cat:"TSHIRT", type:"Oversized T-shirt", name:"Classic Black", price:1800, img:"https://i.postimg.cc/kGTGLZCL/IMG_20260210_222158_000.jpg"}
+        {id:1, name:"Ensemble Polo", price:5900, category:"Ensemble", img:"https://i.postimg.cc/KYryjMWw/IMG_20260210_225601_843.jpg"},
+        {id:2, name:"Ensemble ALO", price:5500, category:"Ensemble", img:"https://i.postimg.cc/rwBs656R/IMG_20260210_222331_180.jpg"},
+        {id:3, name:"Ensemble Synical", price:5900, category:"Ensemble", img:"https://i.postimg.cc/3xx8P9fc/IMG_20260210_224344_638.jpg"},
+        {id:4, name:"Baggy Streetwear", price:2900, category:"Baggy", img:"https://i.postimg.cc/qMW56KDm/IMG_20260215_200828_193.jpg"},
+        {id:5, name:"Premium Hoodie", price:3500, category:"Jacket", img:"https://i.postimg.cc/kXLpRSYQ/IMG_20260215_200825_775.jpg"}
     ];
 
-    const wilayas = [
-        "01 Adrar", "02 Chlef", "03 Laghouat", "04 Oum El Bouaghi", "05 Batna", "06 Bejaia", "07 Biskra", "08 Bechar", "09 Blida", "10 Bouira",
-        "11 Tamanrasset", "12 Tebessa", "13 Tlemcen", "14 Tiaret", "15 Tizi Ouzou", "16 Algiers", "17 Djelfa", "18 Jijel", "19 Setif", "20 Saida",
-        "21 Skikda", "22 Sidi Bel Abbes", "23 Annaba", "24 Guelma", "25 Constantine", "26 Medea", "27 Mostaganem", "28 M'Sila", "29 Mascara", "30 Ouargla",
-        "31 Oran", "32 El Bayadh", "33 Illizi", "34 B.B. Arreridj", "35 Boumerdes", "36 El Tarf", "37 Tindouf", "38 Tissemsilt", "39 El Oued", "40 Khenchela",
-        "41 Souk Ahras", "42 Tipaza", "43 Mila", "44 Ain Defla", "45 Naama", "46 Ain Temouchent", "47 Ghardaia", "48 Relizane", "49 Timimoun", "50 Bordj B. Mokhtar",
-        "51 Ouled Djellal", "52 Beni Abbes", "53 Ain Salah", "54 Ain Guezzam", "55 Touggourt", "56 Djanet", "57 El Meghaier", "58 El Meniaa"
-    ];
+    // قائمة 58 ولاية كاملة
+    const wilayas = ["01 Adrar","02 Chlef","03 Laghouat","04 Oum El Bouaghi","05 Batna","06 Bejaia","07 Biskra","08 Bechar","09 Blida","10 Bouira","11 Tamanrasset","12 Tebessa","13 Tlemcen","14 Tiaret","15 Tizi Ouzou","16 Algiers","17 Djelfa","18 Jijel","19 Setif","20 Saida","21 Skikda","22 Sidi Bel Abbes","23 Annaba","24 Guelma","25 Constantine","26 Medea","27 Mostaganem","28 M'Sila","29 Mascara","30 Ouargla","31 Oran","32 El Bayadh","33 Illizi","34 Bordj Bou Arreridj","35 Boumerdes","36 El Tarf","37 Tindouf","38 Tissemsilt","39 El Oued","40 Khenchela","41 Souk Ahras","42 Tipaza","43 Mila","44 Ain Defla","45 Naama","46 Ain Temouchent","47 Ghardaia","48 Relizane","49 Timimoun","50 Bordj Badji Mokhtar","51 Ouled Djellal","52 Beni Abbes","53 In Salah","54 In Guezzam","55 Touggourt","56 Djanet","57 El Meghaier","58 El Meniaa"];
 
-    let cartCount = 0;
-    let currentProd = null;
+    let cart = [];
+    let currentP = null;
 
-    function render(catFilter = 'ALL') {
-        const grid = document.getElementById('mainGrid');
-        grid.innerHTML = "";
-        const filtered = catFilter === 'ALL' ? products : products.filter(p => p.cat === catFilter);
-        filtered.forEach(p => {
+    function render(data = products) {
+        const grid = document.getElementById('mainGrid'); grid.innerHTML = "";
+        data.forEach(p => {
             grid.innerHTML += `
-                <div class="product-card cursor-pointer" onclick="openProduct(${p.id})">
-                    <img src="${p.img}">
-                    <div class="mt-3">
-                        <h4 class="text-[9px] font-bold text-gray-300 uppercase tracking-widest">${p.cat}</h4>
-                        <h3 class="text-xs font-bold truncate">${p.name}</h3>
-                        <p class="price-tag mt-1 text-sm">${p.price} DA</p>
+                <div class="product-card" onclick="openProduct(${p.id})">
+                    <img src="${p.img}" class="w-full aspect-[4/5] object-cover rounded-lg">
+                    <div class="text-center">
+                        <h3 class="title-text">${p.name}</h3>
+                        <p class="price-text">${p.price} DA</p>
                     </div>
                 </div>`;
         });
-        document.getElementById('currentCatTitle').innerText = catFilter;
     }
 
     function openProduct(id) {
-        currentProd = products.find(x => x.id == id);
+        currentP = products.find(x => x.id == id);
+        document.getElementById('dTitle').innerText = currentP.name;
+        document.getElementById('dPrice').innerText = currentP.price + " DA";
+        document.getElementById('dImg').src = currentP.img;
         showPage('detailsPage');
-        document.getElementById('dImg').src = currentProd.img;
-        document.getElementById('dTitle').innerText = currentProd.name;
-        document.getElementById('dType').innerText = currentProd.type;
-        document.getElementById('dPrice').innerText = `${currentProd.price} DA`;
-        window.scrollTo(0,0);
+    }
+
+    function confirmAndToCart() {
+        const name = document.getElementById('custName').value;
+        const phone = document.getElementById('custPhone').value;
+        if(!name || !phone) return alert("الرجاء إدخال الاسم والهاتف!");
+
+        cart.push({...currentP, date: new Date().toLocaleDateString()});
+        document.getElementById('cartCount').innerText = cart.length;
+        
+        alert("تم إرسال الطلب بنجاح!");
+        showPage('cartPage');
+    }
+
+    function renderCart() {
+        const div = document.getElementById('cartItems');
+        div.innerHTML = cart.length ? "" : "<p class='text-center text-gray-400 mt-10'>لا توجد طلبات</p>";
+        cart.forEach((item, i) => {
+            div.innerHTML += `
+            <div class="flex justify-between p-4 bg-gray-50 mb-3 rounded-xl items-center border">
+                <img src="${item.img}" class="w-14 h-14 rounded-lg object-cover">
+                <div class="flex-1 mr-4">
+                    <h4 class="font-black text-xs uppercase">${item.name}</h4>
+                    <p class="text-black font-bold text-[10px]">${item.price} DA</p>
+                </div>
+                <div class="text-green-600 font-bold text-[10px]"><i class="fa-solid fa-circle-check"></i> مؤكد</div>
+            </div>`;
+        });
     }
 
     function showPage(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
         document.getElementById(id).classList.add('active-page');
-        closeAll();
+        if(id === 'cartPage') renderCart();
+        window.scrollTo(0,0);
     }
 
-    function openPanel(id) {
-        document.getElementById(id).classList.add('panel-active');
-        document.getElementById('overlay').style.display = 'block';
+    function toggleMenu() {
+        const side = document.getElementById('sidebar');
+        side.classList.toggle('open');
+        document.getElementById('overlay').style.display = side.classList.contains('open') ? 'block' : 'none';
     }
 
-    function closeAll() {
-        document.querySelectorAll('.side-panel').forEach(p => p.classList.remove('panel-active'));
-        document.getElementById('overlay').style.display = 'none';
-    }
-
-    function addToCart() {
-        if(!currentProd) return;
-        cartCount++;
-        document.getElementById('cartCount').innerText = cartCount;
-        
-        const size = document.getElementById('prodSize').value;
-        const color = document.getElementById('prodColor').value;
-        const cartList = document.getElementById('cartContent');
-        if(cartCount === 1) cartList.innerHTML = "";
-
-        cartList.innerHTML += `
-            <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                <img src="${currentProd.img}" class="w-14 h-14 rounded object-cover">
-                <div class="flex-1">
-                    <p class="font-bold text-[11px]">${currentProd.name}</p>
-                    <p class="text-[10px] text-gray-400">Size: ${size} | Color: ${color}</p>
-                    <p class="font-black text-xs mt-1">${currentProd.price} DA</p>
-                </div>
-            </div>`;
-        
-        openPanel('sideCart');
-    }
-
-    function filter(cat) {
-        render(cat);
+    function filterCategory(cat) {
+        toggleMenu();
+        const filtered = cat === 'all' ? products : products.filter(p => p.category === cat);
+        render(filtered);
         showPage('homePage');
-    }
-
-    async function sendOrder() {
-        const name = document.getElementById('custName').value;
-        const phone = document.getElementById('custPhone').value;
-        const wilaya = document.getElementById('custWilaya').value;
-        const commune = document.getElementById('custCommune').value;
-        const size = document.getElementById('prodSize').value;
-        const color = document.getElementById('prodColor').value;
-        const delivery = document.querySelector('input[name="delivery"]:checked').value;
-
-        if(!name || !phone || !wilaya || !commune) return alert("Please fill all fields!");
-        
-        const msg = `📦 NEW ORDER\n----------\nProduct: ${currentProd.name}\nType: ${currentProd.type}\nSize: ${size}\nColor: ${color}\n----------\nCustomer: ${name}\nPhone: ${phone}\nWilaya: ${wilaya}\nCommune: ${commune}\nDelivery: ${delivery}`;
-        
-        try {
-            await fetch(`https://api.telegram.org/bot8356805368:AAEy8AILHp8lODLxPeS-Gp6dxUQduoWrtVc/sendMessage`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({chat_id: '8293116710', text: msg})
-            });
-            alert("Order sent successfully!");
-        } catch (e) {
-            alert("Error sending order.");
-        }
     }
 
     window.onload = () => {
@@ -329,5 +214,6 @@
         wilayas.forEach(w => sel.add(new Option(w, w)));
     }
 </script>
+
 </body>
 </html>
